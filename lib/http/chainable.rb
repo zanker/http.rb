@@ -82,6 +82,10 @@ module HTTP
       branch default_options.with_follow(follow)
     end
 
+    def with_cache(cache)
+      branch default_options.with_cache(cache)
+    end
+
     # Make a request with the given headers
     def with_headers(headers)
       branch default_options.with_headers(headers)

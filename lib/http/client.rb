@@ -1,4 +1,5 @@
 require 'http/options'
+require 'http/cache'
 require 'http/redirector'
 require 'uri'
 
@@ -37,6 +38,13 @@ module HTTP
 
     # Perform the HTTP request (following redirects if needed)
     def perform(req, options)
+      if Cache::ALLOWED_CACHE_MODES.include?(options.cache[:mode])
+        cache = Cache.new(options)
+        if res = cache.perform_request(req)
+          return res
+        end
+      end
+
       res = perform_without_following_redirects req, options
 
       if options.follow
@@ -50,6 +58,11 @@ module HTTP
       end
 
       @body_remaining = Integer(res['Content-Length']) if res['Content-Length']
+
+      if Cache::ALLOWED_CACHE_MODES.include?(options.cache_mode)
+        cache.perform_response(res)
+      end
+
       res
     end
 

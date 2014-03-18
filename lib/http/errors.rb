@@ -8,6 +8,9 @@ module HTTP
   # Generic Response error
   class ResponseError < Error; end
 
+  # Generic Cache error
+  class CacheError < Error; end
+
   # Request to do something when we're in the wrong state
   class StateError < ResponseError; end
 end

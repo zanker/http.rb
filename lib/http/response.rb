@@ -1,5 +1,6 @@
 require 'delegate'
 require 'http/headers'
+require 'time'
 require 'http/content_type'
 require 'http/mime_type'
 
@@ -70,11 +71,15 @@ module HTTP
     attr_reader :body
     attr_reader :uri
 
+    attr_reader   :response_time
+    attr_accessor :authoritative, :request_time
+
     # Status aliases! TIMTOWTDI!!! (Want to be idiomatic? Just use status :)
     alias_method :code,        :status
     alias_method :status_code, :status
 
     def initialize(status, version, headers, body, uri = nil) # rubocop:disable ParameterLists
+      @response_time = Time.now
       @status, @version, @body, @uri = status, version, body, uri
       @headers = HTTP::Headers.from_hash(headers || {})
     end
