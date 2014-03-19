@@ -59,7 +59,7 @@ module HTTP
 
       @body_remaining = Integer(res['Content-Length']) if res['Content-Length']
 
-      if Cache::ALLOWED_CACHE_MODES.include?(options.cache_mode)
+      if Cache::ALLOWED_CACHE_MODES.include?(options.cache[:mode])
         cache.perform_response(res)
       end
 
