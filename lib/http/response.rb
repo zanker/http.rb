@@ -81,7 +81,7 @@ module HTTP
     def initialize(status, version, headers, body, uri = nil) # rubocop:disable ParameterLists
       @response_time = Time.now
       @status, @version, @body, @uri = status, version, body, uri
-      @headers = HTTP::Headers.from_hash(headers || {})
+      @headers = HTTP::Headers.coerce(headers || {})
     end
 
     # Obtain the 'Reason-Phrase' for the response

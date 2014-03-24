@@ -10,8 +10,10 @@ module HTTP
     REDIRECT_CODES = [300, 301, 302, 303, 307, 308].freeze
 
     # :nodoc:
-    def initialize(max_redirects)
-      @max_redirects = max_redirects
+    def initialize(options = nil)
+      options   = {:max_hops => 5} unless options.respond_to?(:fetch)
+      @max_hops = options.fetch(:max_hops, 5)
+      @max_hops = false if @max_hops && 1 > @max_hops.to_i
     end
 
     # Follows redirects until non-redirect response found
@@ -39,7 +41,12 @@ module HTTP
         uri = @response.headers['Location']
         fail StateError, 'no Location header in redirect' unless uri
 
-        @request  = @request.redirect(uri)
+        if 303 == @response.code
+          @request = @request.redirect uri, :get
+        else
+          @request = @request.redirect uri
+        end
+
         @response = yield @request
       end
 
@@ -48,13 +55,11 @@ module HTTP
 
     # Check if we reached max amount of redirect hops
     def too_many_hops?
-      return false if @max_redirects.is_a?(TrueClass)
-      @max_redirects.to_i < @visited.count
+      @max_hops < @visited.count if @max_hops
     end
 
     # Check if we got into an endless loop
     def endless_loop?
-      # pretty naive condition
       2 < @visited.count(@visited.last)
     end
   end

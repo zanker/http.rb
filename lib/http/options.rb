@@ -1,4 +1,4 @@
-require 'http/version'
+require 'http/headers'
 require 'openssl'
 require 'socket'
 require 'http/cache'
@@ -58,7 +58,6 @@ module HTTP
 
     def initialize(options = {})
       @response  = options[:response]  || :auto
-      @headers   = options[:headers]   || {}
       @proxy     = options[:proxy]     || {}
       @body      = options[:body]
       @params    = options[:params]
@@ -66,21 +65,23 @@ module HTTP
       @json      = options[:json]
       @follow    = options[:follow]
 
+      @headers   = HTTP::Headers.coerce(options[:headers] || {})
+
       @socket_class     = options[:socket_class]     || self.class.default_socket_class
       @ssl_socket_class = options[:ssl_socket_class] || self.class.default_ssl_socket_class
       @ssl_context      = options[:ssl_context]
+<<<<<<< HEAD
 
       @cache = options[:cache] || self.class.default_cache
 
       @headers['User-Agent'] ||= "RubyHTTPGem/#{HTTP::VERSION}"
+=======
+>>>>>>> origin/master
     end
 
     def with_headers(headers)
-      unless headers.respond_to?(:to_hash)
-        argument_error! "invalid headers: #{headers}"
-      end
       dup do |opts|
-        opts.headers = self.headers.merge(headers.to_hash)
+        opts.headers = self.headers.merge(headers)
       end
     end
 
@@ -156,7 +157,7 @@ module HTTP
       # get serialized here, rather than manually having to add them each time
       {
         :response         => response,
-        :headers          => headers,
+        :headers          => headers.to_h,
         :proxy            => proxy,
         :params           => params,
         :form             => form,
