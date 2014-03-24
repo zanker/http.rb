@@ -70,13 +70,8 @@ module HTTP
       @socket_class     = options[:socket_class]     || self.class.default_socket_class
       @ssl_socket_class = options[:ssl_socket_class] || self.class.default_ssl_socket_class
       @ssl_context      = options[:ssl_context]
-<<<<<<< HEAD
 
       @cache = options[:cache] || self.class.default_cache
-
-      @headers['User-Agent'] ||= "RubyHTTPGem/#{HTTP::VERSION}"
-=======
->>>>>>> origin/master
     end
 
     def with_headers(headers)
