@@ -7,15 +7,8 @@ RSpec.describe HTTP::Redirector do
     simple_response status, "", "Location" => location
   end
 
-  let(:max_hops)       { 5 }
-  subject(:redirector) { described_class.new max_hops }
-  let(:options) do
-    {
-      :max_hops => 5,
-      :strict => true
-    }
-  end
-  subject(:strict_redirector) { described_class.new options }
+  subject(:redirector)        { described_class.new :strict => false }
+  subject(:strict_redirector) { described_class.new :strict => true }
 
   context "following 300 redirect" do
     let(:orig_request)  { HTTP::Request.new :post, "http://www.example.com/" }

@@ -10,26 +10,21 @@ module HTTP
     REDIRECT_CODES = [300, 301, 302, 303, 307, 308].freeze
 
     # :nodoc:
-    def initialize(options = nil)
-      options   = {:max_hops => 5, :strict => false} unless options.respond_to?(:fetch)
-      @strict   = options.fetch(:strict)
-      @max_hops = options.fetch(:max_hops, 5)
-      @max_hops = false if @max_hops && 1 > @max_hops.to_i
+    def initialize(options)
+      @strict   = options.fetch(:strict, true)
+      @max_hops = options.fetch(:max_hops, 5).to_i
     end
 
     # Follows redirects until non-redirect response found
     def perform(request, response, &block)
-      reset(request, response)
+      @request  = request
+      @response = response
+      @visited  = []
+
       follow(&block)
     end
 
     private
-
-    # Reset redirector state
-    def reset(request, response)
-      @request, @response = request, response
-      @visited = []
-    end
 
     # Follow redirects
     def follow
@@ -72,7 +67,7 @@ module HTTP
 
     # Check if we reached max amount of redirect hops
     def too_many_hops?
-      @max_hops < @visited.count if @max_hops
+      1 <= @max_hops && @max_hops < @visited.count
     end
 
     # Check if we got into an endless loop

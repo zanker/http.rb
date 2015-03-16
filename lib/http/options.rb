@@ -58,8 +58,12 @@ module HTTP
       self.headers.merge(headers)
     end
 
-    %w(proxy params form json body follow response socket_class ssl_socket_class ssl_context).each do |method_name|
+    %w(follow proxy params form json body response socket_class ssl_socket_class ssl_context).each do |method_name|
       def_option method_name
+    end
+
+    def follow=(value)
+      @follow = value == true ? {} : value
     end
 
     def_option :cache do |cache_or_cache_options|
