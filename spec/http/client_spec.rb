@@ -172,8 +172,8 @@ describe HTTP::Client do
 
     context 'with a mismatch host' do
       it 'errors' do
-        expect { client.get(dummy_ssl.endpoint.gsub('127.0.0.1', 'localhost')) }
-          .to raise_error(OpenSSL::SSL::SSLError, /does not match/)
+        expect { client.get(dummy_ssl.endpoint.gsub('127.0.0.1', 'localhost')) } \
+          .to raise_error(OpenSSL::SSL::SSLError, /(?:does|was) not match/)
       end
     end
   end
