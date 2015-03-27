@@ -54,7 +54,7 @@ module HTTP
       alias_method :to_str, :to_s
 
       def check_sequence!
-        return unless @active_seq != @client.sequence_id
+        return if !@client || @active_seq == @client.sequence_id
 
         fail StateError, "Sequence ID #{@active_seq} does not match #{@client.sequence_id}. You must read the entire request off."
       end
