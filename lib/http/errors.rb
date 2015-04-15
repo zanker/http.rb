@@ -12,7 +12,10 @@ module HTTP
   class StateError < ResponseError; end
 
   # Generic Timeout error
-  class TimeoutError < Error; end
+  class TimeoutError < Error
+    def cause
+    end
+  end
 
   # Generic Cache error
   class CacheError < Error; end
